@@ -1,0 +1,15 @@
+# Secrets — NEVER commit
+gmail.cred.xml
+config.json
+
+# Runtime output
+logs/
+*.pcapng
+*.pcap
+
+# Caveman backups
+*.original.md
+
+# OS cruft
+Thumbs.db
+desktop.ini
