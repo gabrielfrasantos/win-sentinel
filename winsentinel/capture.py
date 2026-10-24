@@ -158,6 +158,10 @@ def _prune(folder: Path) -> None:
 
 
 def _open_socket(local_ip: str) -> socket.socket:
+    """A raw socket on one local address; never the wildcard (that would sniff every
+    interface)."""
+    if ipaddress.IPv4Address(local_ip).is_unspecified:
+        raise OSError(f"refusing to capture on {local_ip}")
     s = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_IP)
     try:
         s.bind((local_ip, 0))
@@ -197,8 +201,11 @@ def capture(seconds: int, local_ip: str, ctx: Context) -> CaptureSummary:
         return CaptureSummary(seconds, error="packet capture needs Windows")
     if not winapi.is_admin():
         return CaptureSummary(seconds, error="packet capture needs administrator")
-    if not local_ip:
-        return CaptureSummary(seconds, error="packet capture: no network connection")
+    try:
+        if ipaddress.IPv4Address(local_ip).is_unspecified:
+            raise ValueError(local_ip)
+    except ValueError:
+        return CaptureSummary(seconds, error=f"packet capture: no usable address ({local_ip!r})")
     folder = paths.captures_dir()
     pcap = folder / f"capture-{dt.datetime.now():%Y%m%d-%H%M%S}.pcap"
     tally = Tally(local_ip)

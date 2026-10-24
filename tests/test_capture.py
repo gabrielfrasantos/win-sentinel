@@ -1,6 +1,8 @@
 import socket
 import struct
 
+import pytest
+
 from winsentinel import capture
 
 
@@ -82,6 +84,18 @@ def test_pcap_format():
     assert struct.unpack("<IHHiIII", header)[-1] == capture.LINKTYPE_RAW
     record = capture.pcap_record(b"abc", 1.5)
     assert struct.unpack("<IIII", record[:16]) == (1, 500000, 3, 3)
+
+
+def test_capture_refuses_the_wildcard_address(monkeypatch):
+    with pytest.raises(OSError, match="refusing"):
+        capture._open_socket("0.0.0.0")
+    monkeypatch.setattr(capture.winapi, "WINDOWS", True)
+    monkeypatch.setattr(capture.winapi, "is_admin", lambda: True)
+    opened = []
+    monkeypatch.setattr(capture, "_open_socket", opened.append)
+    for address in ("", "0.0.0.0", "not-an-ip"):
+        assert capture.capture(5, address, None).error.startswith("packet capture: no usable")
+    assert opened == []
 
 
 def test_capture_off_windows_is_a_clear_error(monkeypatch):

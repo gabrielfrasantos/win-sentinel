@@ -904,10 +904,13 @@ def scan(
             settings.save_state(known_devices=table_)
 
     if capture_seconds:
-        local_ip = network[0] if network else (local_network() or ("",))[0]
-        result.capture = capture.capture(capture_seconds, local_ip, ctx)
-        if result.capture.error:
-            result.errors.append(result.capture.error)
+        found = network or local_network()
+        if found is None:
+            result.errors.append("packet capture: no network connection")
+        else:
+            result.capture = capture.capture(capture_seconds, found[0], ctx)
+            if result.capture.error:
+                result.errors.append(result.capture.error)
 
     result.findings = rules.evaluate(result, own_pid=os.getpid())
     for f in result.findings:
