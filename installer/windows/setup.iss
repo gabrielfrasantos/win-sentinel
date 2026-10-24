@@ -53,7 +53,7 @@ Filename: "{app}\win-sentinel.exe"; Parameters: "--enable-startup"; \
           Flags: runhidden waituntilterminated; Tasks: startupicon; Check: not Relaunching
 Filename: "{app}\win-sentinel.exe"; \
           Description: "{cm:LaunchProgram,win-sentinel}"; \
-          Flags: nowait postinstall skipifsilent
+          Flags: nowait postinstall skipifsilent runascurrentuser
 Filename: "{app}\win-sentinel.exe"; Flags: nowait; Check: Relaunching
 
 [UninstallRun]

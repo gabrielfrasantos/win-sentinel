@@ -66,7 +66,7 @@ scripts/generate_icon.py — assets/icon.ico + icon.png from desktop.render_icon
 ## Updates and installer
 
 - The updater only installs a file whose SHA-256 matches the asset's GitHub `digest` or the `.sha256` asset; a mismatch is deleted. It always asks first.
-- Inno Setup: admin install to Program Files, `CloseApplications=yes`, `[InstallDelete]` of `_internal`, the app's `--quit` before files are replaced. Keep `AppId` stable. `/RELAUNCH=1` (passed by the updater) restarts the app after a silent install and skips re-creating the logon task.
+- Inno Setup: admin install to Program Files; every `[Run]` that starts the app must run elevated (postinstall entries default to the non-elevated original user, which fails with error 740 on a `requireAdministrator` exe, hence `runascurrentuser`), `CloseApplications=yes`, `[InstallDelete]` of `_internal`, the app's `--quit` before files are replaced. Keep `AppId` stable. `/RELAUNCH=1` (passed by the updater) restarts the app after a silent install and skips re-creating the logon task.
 - `win-sentinel.exe --smoke-test` must exit 0: CI runs it on the built folder and after a silent install.
 
 ## Data
