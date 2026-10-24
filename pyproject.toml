@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "win-sentinel"
-version = "0.1.1"
+version = "0.1.2"
 description = "Windows tray app: cleanup, driver updates, spyware / crypto-miner checks and a CPU temperature watch, on a schedule, with self-update."
 readme = "README.md"
 license = { file = "LICENSE" }
