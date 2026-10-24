@@ -1,14 +1,25 @@
-# Secrets — NEVER commit
-gmail.cred.xml
-config.json
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
 
-# Runtime output
-logs/
-*.pcapng
+# Tool caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Packaging (scripts/generate_icon.py, pyinstaller, iscc)
+assets/
+build/
+dist/
+installer-output/
+
+# Runtime data if WIN_SENTINEL_HOME points into the checkout
+data/
 *.pcap
-
-# Caveman backups
-*.original.md
+*.pcapng
 
 # OS cruft
 Thumbs.db

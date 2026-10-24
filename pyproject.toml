@@ -1,0 +1,69 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "win-sentinel"
+version = "0.1.0"
+description = "Windows tray app: cleanup, driver updates, spyware / crypto-miner checks and a CPU temperature watch, on a schedule, with self-update."
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Win32 (MS Windows)",
+    "Environment :: X11 Applications :: Qt",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Python :: 3",
+    "Topic :: System :: Monitoring",
+    "Topic :: System :: Systems Administration",
+]
+dependencies = [
+    "PySide6>=6.6",
+    "psutil>=5.9",
+    "keyring>=25",
+    "pywin32>=306; sys_platform == 'win32'",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.4",
+    "mypy>=1.10",
+    "types-psutil",
+    "pyinstaller>=6.0",
+]
+
+[project.scripts]
+win-sentinel-cli = "winsentinel.__main__:main"
+
+[project.gui-scripts]
+win-sentinel = "winsentinel.gui.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["winsentinel*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "C4", "PTH"]
+ignore = ["B008", "B009", "B010"]
+
+[tool.mypy]
+python_version = "3.10"
+platform = "win32"
+files = ["winsentinel"]
+strict = true
+ignore_missing_imports = true
+warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+module = ["winsentinel.gui.*"]
+ignore_errors = true
