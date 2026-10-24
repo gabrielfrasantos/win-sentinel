@@ -15,14 +15,12 @@ import os
 import threading
 from collections.abc import Callable, Iterable
 from dataclasses import dataclass, field
-from typing import Any, TypeVar
+from typing import Any
 
 from winsentinel import APP_NAME, winapi, wmi
 from winsentinel.report import ALERT, ERROR, NOTICE, OK, Context, Report, human_size, table
 
 logger = logging.getLogger(__name__)
-
-T = TypeVar("T")
 
 WU_SEARCH = "IsInstalled=0 and Type='Driver' and IsHidden=0"
 PROBLEMS_QUERY = (
@@ -166,7 +164,7 @@ def _search_updates() -> list[DriverUpdate]:
     return [to_update(u) for u in _offered(_session())]
 
 
-def _abandonable(fn: Callable[[], T], ctx: Context, name: str) -> T:
+def _abandonable[T](fn: Callable[[], T], ctx: Context, name: str) -> T:
     """Run a blocking COM call in its own thread so Stop doesn't have to wait for it."""
     box: dict[str, Any] = {}
 

@@ -1,7 +1,7 @@
 """Small Windows helpers: admin check, elevation, hidden subprocesses, opening files.
 
-Every function degrades to something harmless off Windows so the rest of the code
-(and the tests) run anywhere.
+Every function degrades to something harmless off Windows so the pure logic stays
+testable with mocks.
 """
 
 from __future__ import annotations

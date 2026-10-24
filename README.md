@@ -142,13 +142,16 @@ over plain DNS (not a browser's DNS-over-HTTPS). Captures are saved as `.pcap` i
 
 ## Development
 
+Needs Python 3.12+ on Windows (PySide6 mishandles reference counts in ways only
+3.12's immortal objects absorb; on 3.10/3.11 the GUI aborts after a while).
+
 ```
 python -m venv .venv
 .venv\Scripts\activate
 pip install -e ".[dev]"
 python -m winsentinel.gui            # the app (run the terminal as admin for everything)
 python -m winsentinel security       # one job from the command line; --help for all
-python -m pytest                     # tests (Windows-only API tests run on Windows)
+python -m pytest                     # tests, including the real Windows API tests
 ruff check . && ruff format --check . && mypy
 ```
 

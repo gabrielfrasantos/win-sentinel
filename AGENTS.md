@@ -46,7 +46,7 @@ scripts/generate_icon.py — assets/icon.ico + icon.png from desktop.render_icon
 - COM is per thread: `wmi.ensure_com()` (called by `query()`/`dispatch()`). Never pass COM objects between threads; convert to dataclasses / dicts in the thread that made them.
 - Late-bound COM only (`win32com.client.dynamic`): the frozen app can't generate makepy wrappers.
 - Windows paths in pure code: `ntpath`, not `pathlib` (tests run on Linux too).
-- Everything Windows-only degrades on other platforms (returns empty / a clear error) so tests and the GUI run anywhere.
+- Windows-only calls stay behind `winapi.WINDOWS` checks and degrade to empty results / a clear error, so the pure logic stays testable with mocks.
 
 ## Jobs and threads
 
@@ -75,6 +75,10 @@ scripts/generate_icon.py — assets/icon.ico + icon.png from desktop.render_icon
 - The email password lives only in Windows Credential Manager. Never log it or write it to a file.
 - `state.json` holds `last_run`, `schedule_since`, `known_devices`.
 
+## Python and platform
+
+- Windows only: CI, CodeQL and releases all run on `windows-latest`. Python 3.12+ (the installer bundles 3.12): PySide6 over-releases `None`/`True`/`False` on signal emits and `processEvents()`, which aborts 3.10/3.11 after a few thousand calls and is harmless on 3.12's immortal objects.
+
 ## Style
 
 - PEP 8, line length 100, `ruff` (lint + format) authoritative, `mypy --strict` (typed as `platform = "win32"`; `gui/` excluded).
@@ -85,7 +89,7 @@ scripts/generate_icon.py — assets/icon.ico + icon.png from desktop.render_icon
 
 - `python -m pytest`. The autouse `home` fixture redirects the data folder and fakes the credential store.
 - Mock Windows APIs at the module boundary (`wmi.query`, `wmi.dispatch`, `drivers._session`, `security.sample_processes`, ...). No network: patch `updater._urlopen`.
-- `tests/test_windows.py` runs against the real APIs on Windows (CI) and is skipped elsewhere.
+- `tests/test_windows.py` runs against the real APIs (WMI, COM, WinVerifyTrust, Task Scheduler, packet capture); CI runners are elevated, so the admin-only tests run too.
 - GUI tests run with `QT_QPA_PLATFORM=offscreen`.
 
 ## Release
